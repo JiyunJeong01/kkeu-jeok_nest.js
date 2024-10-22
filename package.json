@@ -27,6 +27,7 @@
     "cookie-parser": "^1.4.7",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.1",
+    "firebase": "^11.0.0",
     "hbs": "^4.2.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1"
