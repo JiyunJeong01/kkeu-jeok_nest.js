@@ -13,7 +13,7 @@ async function bootstrap() {
   //.env 파일 가져오기
   const configService = app.get(ConfigService);
 
-  // 정적 파일 경로 설정
+  // 정적 파일 경로 설정 어엉
   app.useStaticAssets(join(__dirname, '..', 'public'));
 
   // 뷰 파일 경로 설정
