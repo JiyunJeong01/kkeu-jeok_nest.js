@@ -14,13 +14,13 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // 정적 파일 경로 설정 어엉
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.useStaticAssets(join(__dirname, '..', 'src/public'));
 
   // 뷰 파일 경로 설정
-  app.setBaseViewsDir(join(__dirname, '..', 'views'));
+  app.setBaseViewsDir(join(__dirname, '..', 'src/views'));
 
   // Partial 폴더 경로 등록
-  hbs.registerPartials(join(__dirname, '..', 'views/partials'));
+  hbs.registerPartials(join(__dirname, '..', 'src/views/partials'));
 
   // hbs (Handlebars) 엔진 설정
   app.setViewEngine('hbs');
