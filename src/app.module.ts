@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController, AuthController } from './app.controller';
-import { AppService, UserService } from './app.service';
+import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { FirebaseModule } from './firebase/firebase.module';
+import { UserModule } from './domain/user/user.module'; // UserModule import
 
 @Module({
   imports: [
@@ -10,8 +10,9 @@ import { FirebaseModule } from './firebase/firebase.module';
     isGlobal: true, // 모든 모듈에서 접근 가능하도록 설정
   }),
   FirebaseModule,
+  UserModule,
 ],
-  controllers: [AppController, AuthController],
-  providers: [AppService, UserService],
+  controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}

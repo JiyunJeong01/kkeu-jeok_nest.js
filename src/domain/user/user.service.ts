@@ -1,14 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, orderBy, where } from 'firebase/firestore';
-import { db } from './firebase/fbase';
-
-
-@Injectable()
-export class AppService {
-  getHello(): string {
-    return 'Hello World!';
-  }
-}
+import { db } from '../../firebase/fbase';
 
 @Injectable()
 export class UserService {
