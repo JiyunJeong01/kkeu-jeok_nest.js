@@ -1,0 +1,18 @@
+<head>
+    <link rel="stylesheet" href="/css/login.css">
+    <script src="/js/login.js"></script>
+</head>
+<div class="login-wrapper">
+    <h2>Login</h2>
+    <form method="post" action="/submit-login" id="login-form">
+        <input type="text" id="email" name="email" placeholder="Email" value="{{savedEmail}}">
+        <input type="password" id="password" name="password" placeholder="Password">
+        <div>
+            <label for="remember-check">
+                <input type="checkbox" id="remember-check" name="remember-check">아이디 저장하기
+            </label>
+            <a href="/account">회원가입</a>
+        </div>
+        <input type="submit" value="Login">
+    </form>
+</div>

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { AppController, AuthController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 
@@ -9,7 +9,7 @@ import { ConfigModule } from '@nestjs/config';
     isGlobal: true, // 모든 모듈에서 접근 가능하도록 설정
   }),
 ],
-  controllers: [AppController],
+  controllers: [AppController, AuthController],
   providers: [AppService],
 })
 export class AppModule {}

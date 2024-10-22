@@ -11,3 +11,14 @@ export class AppController {
     return;
   }
 }
+
+@Controller('login')
+export class AuthController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  @Render('login')
+  loginPage() {
+    return;
+  }
+}
