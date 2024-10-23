@@ -52,6 +52,20 @@ export class UserLoginController {
     // 로그인 성공
     res.redirect("/");
   }
+
+  // 로그아웃
+  @Get('logout')
+  @Redirect('/') // 로그아웃 후 리다이렉트할 URL
+  async logout(@Session() session: Record<string, any>): Promise<void> {
+    return new Promise((resolve, reject) => {
+      session.destroy(err => {
+        if (err) {
+          throw new HttpException('Failed to log out', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        resolve(); // 성공적으로 로그아웃 처리
+      });
+    });
+  }
 }
 
 @Controller('account')
