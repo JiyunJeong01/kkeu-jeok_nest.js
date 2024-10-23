@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Session, Res, Render, HttpException, HttpStatus, Redirect } from '@nestjs/common';
-import { LoginDto } from './user.dto'; // 로그인 DTO 가져오기
+import { LoginDto, AccountDto } from './user.dto'; // 로그인 DTO 가져오기
 import * as bcryptjs from 'bcryptjs'; // bcryptjs 가져오기
 import { UserService } from './user.service'; // UserService import
 import { Response } from 'express';
@@ -93,7 +93,7 @@ export class UserAccountController {
   // 회원가입 진행
   @Post()
   @Redirect('/login')
-  async account(@Body() body: { email: string; name: string; password: string }) {
+  async account(@Body() body: AccountDto) {
     const { email, name, password } = body;
     const hashedPassword = await bcryptjs.hash(password, 12);
 
