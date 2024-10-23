@@ -1,0 +1,98 @@
+<head>
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/index.js"></script>
+</head>
+
+<body>
+    <div class="image-box" id="image-box" onclick="imageClose()">
+        <div class="image-back">
+            <img src="" alt="" class="image-box-content" id="image-box-content">
+        </div>
+    </div>
+    <div class="wrap">
+        <div class="header">
+            <h2>Memo</h2>
+            <p>
+                저장하고 싶은 내용을 입력해주세요.
+            </p>
+        </div>
+        <div class="area-write">
+            <form id="postForm" name="postForm" method="post" action="/memo" enctype="multipart/form-data" accept-charset="UTF-8">
+                <textarea class="field" placeholder="무슨 일이 일어나고 있나요?" name="content" id="content" cols="30" rows="1"></textarea>
+                <div class="row row-cols-4 imageContainer" id="imageContainer"></div>
+                <div id="fileContainer"></div>
+                <i class="xi-image xi-x" onclick="imageInput('imageContainer', 'fileContainer');"></i>
+                <i class="xi-paperclip xi-x" onclick="fileInput('imageContainer', 'fileContainer')"></i>
+                <button type="submit">
+                    <img class="send-img" src="/img/send.png" alt="">
+                </button>
+            </form>
+        </div>
+
+        <div id="cards-box" class="area-read">
+            {{#if memos.length}}
+                {{#each memos}}
+                    <div class="card">
+                        <!-- date/username 영역 -->
+                        <div class="metadata">
+                            <div class="date">
+                                <script>
+                                    document.write(formatTimeStamp('{{this.createdAt.seconds}}'));
+                                </script>
+                            </div>
+                        </div>
+                        <!-- content 조회/수정 영역-->
+                        <div class="content">
+                            <div id="{{this.id}}-content" class="text">
+                                {{this.content}}
+                            </div>
+
+                            <div id="{{this.id}}-editarea" class="edit">
+                                <textarea id="{{this.id}}-textarea" class="te-edit" name="" id="" cols="30" rows="1"></textarea>
+                            </div>
+                            {{#if this.files.length}}
+                                <div class="row row-cols-4" id="{{this.id}}-imageContainer">
+                                    {{#each this.files}}
+                                        {{#if (startsWith this.type "image/")}}
+                                            <div class="col input-col file-view" data-index="{{this.index}}">
+                                                <img src="{{this.downloadURL}}" alt="{{this.fileName}}" onclick="imageShow(this.src)">
+                                            </div>
+                                        {{/if}}
+                                    {{/each}}
+                                </div>
+
+                                <div id="{{this.id}}-fileContainer">
+                                    {{#each this.files}}
+                                        {{#unless (startsWith this.type "image/")}}
+                                            <a href="{{this.downloadURL}}" download>
+                                                <div class="col input-col file-col file-view">
+                                                    <i class="xi-file-download-o xi-2x"></i>
+                                                    <span class="file-name">{{this.fileName}}</span>
+                                                </div>
+                                            </a>
+                                        {{/unless}}
+                                    {{/each}}
+                                </div>
+                            {{/if}}
+                        </div>
+                        <!-- 버튼 영역-->
+                        <div class="footer">
+                            <i id="{{this.id}}-image" class="xi-image xi-x" onclick="imageInput('{{this.id}}-imageContainer', '{{this.id}}-fileContainer', '{{this.id}}');"></i>
+                            <i id="{{this.id}}-file" class="xi-paperclip xi-x" onclick="fileInput('{{this.id}}-imageContainer', '{{this.id}}-fileContainer', '{{this.id}}')"></i>
+                            <i id="{{this.id}}-bookmark" class="xi-star-o xi-x" onclick="bookmark('{{this.id}}')" 
+                                style="display: {{#if this.bookmark}}none{{else}}block{{/if}};"></i>
+                            <i id="{{this.id}}-unbookmark" class="xi-star xi-x" onclick="unBookmark('{{this.id}}')"
+                                style="display: {{#if this.bookmark}}block{{else}}none{{/if}};"></i>
+                            <img id="{{this.id}}-edit" class="icon-start-edit" src="/img/edit.png" alt=""
+                                onclick="editPost('{{this.id}}')">
+                            <img id="{{this.id}}-delete" class="icon-delete" src="/img/delete.png" alt=""
+                                onclick="deleteOne('{{this.id}}')">
+                            <img id="{{this.id}}-submit" class="icon-end-edit" src="/img/done.png" alt=""
+                                onclick="submitEdit('{{this.id}}')">
+                        </div>
+                    </div>
+                {{/each}}
+            {{/if}}
+        </div>
+    </div>
+</body>

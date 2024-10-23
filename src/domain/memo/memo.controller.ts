@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Session, Res, Render, HttpException, HttpS
 import { MemoService } from './memo.service';
 import { Response } from 'express';
 
-@Controller('memo')
+@Controller()
 export class MemoController {
     constructor(private readonly memoService: MemoService) {}
 
@@ -13,9 +13,9 @@ export class MemoController {
         if (session.user) {
             const userId = session.user.id;
             const memos = await this.memoService.findByUserId(userId);
-            return { memos }; 
+            return { memos, user: session.user };
           } else {
-            res.redirect('/home');
+            return res.redirect('/home');
           }
       }
 }

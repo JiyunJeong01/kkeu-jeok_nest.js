@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import * as hbs from 'hbs';
+import * as hbs from 'hbs'; // hbs를 가져옵니다.
 import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
@@ -10,10 +10,10 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  //.env 파일 가져오기
+  // .env 파일 가져오기
   const configService = app.get(ConfigService);
 
-  // 정적 파일 경로 설정 어엉
+  // 정적 파일 경로 설정
   app.useStaticAssets(join(__dirname, '..', 'src/public'));
 
   // 뷰 파일 경로 설정
@@ -21,6 +21,11 @@ async function bootstrap() {
 
   // Partial 폴더 경로 등록
   hbs.registerPartials(join(__dirname, '..', 'src/views/partials'));
+
+  // Handlebars 헬퍼 등록
+  hbs.registerHelper('startsWith', function (str, prefix) {
+    return str.startsWith(prefix);
+  });
 
   // hbs (Handlebars) 엔진 설정
   app.setViewEngine('hbs');
