@@ -1,0 +1,43 @@
+<head>
+    <link rel="stylesheet" href="/css/account.css">
+</head>
+
+<div class="account-wrapper">
+    <h2>회원가입</h2>
+    <form action="/account" method="POST" id="form">
+        <label for="email">이메일</label>
+        <span>
+            <input type="text" id="email" name="email" placeholder="이메일">
+            <button type="button" class="email_btn" id="email_btn" onclick="sendAuthEmail()">인증번호 보내기</button>
+            <span class="error" id="email_error"></span>
+            <input type="text" id="check_email" name="check_email" placeholder="인증번호를 입력하세요" disabled>
+            <button type="button" class="check_email_btn" id="check_email_btn" onclick="checkAuthCode()">인증번호 확인</button>
+            <span class="error" id="email_check_error"></span>
+        </span>
+
+        <label for="name">이름</label>
+        <span>
+            <input type="text" id="name" name="name" placeholder="이름">
+            <span class="error" id="name_error"></span>
+        </span>
+
+        <label for="password">비밀번호</label>
+        <span>
+            <input type="password" id="password" name="password" placeholder="비밀번호">
+            <span class="error" id="password_error"></span>
+        </span>
+
+        <label for="confirm_password">비밀번호 재확인</label>
+        <span>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="비밀번호 재확인">
+            <span class="error" id="password_confirm_error"></span>
+        </span>
+
+        <input type="submit" value="가입하기">
+    </form>
+</div>
+
+{{!-- 폼 정보 담기 위해 밑에 작성 --}}
+<head>
+    <script src="/js/account.js"></script>
+</head>

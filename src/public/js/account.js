@@ -66,7 +66,7 @@ async function validateEmail() {
 // 이메일 중복 체크
 async function checkEmailDuplicate(email) {
     const data = { 'email': email };
-    const response = await fetch("/check-email", {
+    const response = await fetch("/account/check-email", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -146,7 +146,7 @@ async function sendAuthEmail() {
     try {
         console.log(email)
         const data = { 'email': email };
-        const response = await fetch("/auth-email", {
+        const response = await fetch("/account/auth-email", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

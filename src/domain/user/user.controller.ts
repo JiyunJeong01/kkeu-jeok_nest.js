@@ -1,20 +1,23 @@
-import { Controller, Get, Post, Body, Session, Render } from '@nestjs/common';
+import { Controller, Get, Post, Body, Session, Res, Render, HttpException, HttpStatus, Redirect } from '@nestjs/common';
 import { LoginDto } from './user.dto'; // 로그인 DTO 가져오기
 import * as bcryptjs from 'bcryptjs'; // bcryptjs 가져오기
 import { UserService } from './user.service'; // UserService import
+import { Response } from 'express';
 
 @Controller('login')
-export class UserController {
+export class UserLoginController {
   constructor(private readonly userService: UserService) {}
 
+  // 로그인 페이지
   @Get()
   @Render('login')
   loginPage() {
     return;
   }
 
+  // 로그인 
   @Post()
-  async login(@Body() loginDto: LoginDto, @Session() session: Record<string, any>) {
+  async login(@Body() loginDto: LoginDto, @Session() session: Record<string, any>, @Res() res: Response,) {
     const { email, password } = loginDto;
 
     // 입력된 이메일로 사용자 찾기
@@ -40,9 +43,62 @@ export class UserController {
 
     // "아이디 저장하기" 체크박스 확인
     if (loginDto['remember-check']) {
-      return { message: '로그인 성공', savedEmail: email }; // 쿠키 설정을 위한 이메일 반환
+      // 쿠키 설정
+      res.cookie('savedEmail', email, { maxAge: 3600 * 24 * 30 * 1000, httpOnly: true }); // 쿠키 설정
     } else {
-      return { message: '로그인 성공' }; // 로그인 성공 메시지 반환
+      res.clearCookie('savedEmail');
     }
+
+    // 로그인 성공
+    res.redirect("/");
+  }
+}
+
+@Controller('account')
+export class UserAccountController {
+  constructor(private readonly userService: UserService) {}
+
+  // 회원가입 페이지
+  @Get()
+  @Render('account')
+  accountPage() {
+    return;
+  }
+
+  // 이메일 중복 확인
+  @Post('check-email')
+  async checkEmailDuplicate(@Body('email') email: string): Promise<{ isDuplicate: boolean }> {
+    const isDuplicate = await this.userService.getUserByEmail(email);
+    return { isDuplicate };
+  }
+
+  // 이메일 인증 전송
+  @Post('auth-email')
+  async emailAuth(@Body('email') email: string): Promise<{ ok: boolean; msg: string; authNum?: number }> {
+    try {
+      const result = await this.userService.sendAuthEmail(email);
+      return {
+        ok: true,
+        msg: '메일 전송에 성공하였습니다.',
+        authNum: result,
+      };
+    } catch (error) {
+      throw new HttpException({
+        ok: false,
+        msg: '메일 전송에 실패하였습니다. 다시 시도해 주세요.',
+      }, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  // 회원가입 진행
+  @Post()
+  @Redirect('/login')
+  async account(@Body() body: { email: string; name: string; password: string }) {
+    const { email, name, password } = body;
+    const hashedPassword = await bcryptjs.hash(password, 12);
+
+    await this.userService.createAccount(email, name, hashedPassword);
+
+    return;
   }
 }
