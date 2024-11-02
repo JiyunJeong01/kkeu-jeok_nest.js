@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import * as hbs from 'hbs'; // hbs를 가져옵니다.
+import * as hbs from 'hbs';
 import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
@@ -22,7 +22,7 @@ async function bootstrap() {
   // Partial 폴더 경로 등록
   hbs.registerPartials(join(__dirname, '..', 'src/views/partials'));
 
-  // Handlebars 헬퍼 등록
+  // hbs 안에서 startsWith이라는 js문법을 사용하기 위해 헬퍼 등록
   hbs.registerHelper('startsWith', function (str, prefix) {
     return str.startsWith(prefix);
   });

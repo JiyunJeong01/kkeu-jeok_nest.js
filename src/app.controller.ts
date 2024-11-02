@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Render, Session } from '@nestjs/common';
+import { Controller, Get, Render, } from '@nestjs/common';
 
 @Controller('home')
 export class AppController {
@@ -7,6 +7,5 @@ export class AppController {
   @Get()
   @Render('home') // home.hbs를 렌더링
   index() {
-    return;
   }
 }

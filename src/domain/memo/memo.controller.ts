@@ -8,14 +8,13 @@ export class MemoController {
 
     // 메모 페이지
     @Get()
-    @Render('index')
     async memoPage(@Session() session: Record<string, any>, @Res() res: Response) {
         if (session.user) {
             const userId = session.user.id;
             const memos = await this.memoService.findByUserId(userId);
-            return { memos, user: session.user };
-          } else {
-            return res.redirect('/home');
-          }
-      }
+            return res.render('index', { memos, user: session.user }); // index.hbs 렌더링
+        } else {
+            return res.redirect('/home'); // 세션이 없으면 /home으로 리다이렉트
+        }
+    }
 }
