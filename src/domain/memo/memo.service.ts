@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, where, limit } from 'firebase/firestore';
 import { db, storage } from '../../firebase/fbase';
 import { v4 as uuidv4 } from 'uuid';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes, deleteObject } from 'firebase/storage';
 
 @Injectable()
 export class MemoService {
@@ -121,6 +121,47 @@ export class MemoService {
             }));
         } catch (error) {
             console.error("파일 업로드 및 저장 중 오류:", error);
+            throw error;
+        }
+    }
+
+    // 메모 삭제
+    async deleteMemo(userId: string, memoId: string) {
+        try {
+            const memoRef = doc(db, 'memos', memoId);
+            await deleteDoc(memoRef);
+            await this.deleteFiles(userId, memoId);
+            return memoId;
+        } catch (error) {
+            console.error('메모 삭제 중 오류:', error);
+            throw error;
+        }
+    }
+
+    // 메모 삭제시 파일 같이 삭제
+    private async deleteFiles(userId: string, memoId: string) {
+        try {
+            // 메모와 관련된 파일 정보 가져오기
+            const files = await this.getFilesByMemoId(memoId);
+    
+            // Firebase Storage에서 파일 삭제
+            const deletePromises = files.map(async (file) => {
+                const fileRef = ref(storage, `${userId}/${file.uuid}_${file.fileName}`);
+                await deleteObject(fileRef);
+            });
+            await Promise.all(deletePromises);
+    
+            // Firestore에서 파일 문서 삭제
+            const filesCollectionRef = collection(db, 'files');
+            const q = query(filesCollectionRef, where('memoId', '==', memoId));
+            const querySnapshot = await getDocs(q);
+            const deleteFileDocsPromises = [];
+            querySnapshot.forEach((doc) => {
+                deleteFileDocsPromises.push(deleteDoc(doc.ref));
+            });
+            await Promise.all(deleteFileDocsPromises);
+        } catch (error) {
+            console.error("메모와 파일 삭제 중 오류:", error);
             throw error;
         }
     }
