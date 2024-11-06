@@ -125,6 +125,29 @@ export class MemoService {
         }
     }
 
+    // 메모 수정
+    async modifiedMemo(userId: string, memoId: string, newContent: string, files?: Array<Express.Multer.File>): Promise<string> {
+        try {
+            const timestamp = new Date();
+            const memoRef = doc(db, 'memos', memoId);
+            // 업데이트할 데이터 객체 생성
+            const updateData = {
+                content: newContent,
+                updatedAt: timestamp
+            };
+    
+            // 해당 문서 업데이트
+            await updateDoc(memoRef, updateData);
+            if (files && files.length > 0) {
+                await this.uploadFile(userId, memoId, files);
+            }
+            return memoId;
+        } catch (error) {
+            console.error('메모 수정 중 오류:', error);
+            throw error;
+        }
+    }
+
     // 메모 삭제
     async deleteMemo(userId: string, memoId: string) {
         try {
