@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Post, Res, Body, Session, UploadedFiles, UseInterceptors, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Put, Post, Res, Body, Session, UploadedFiles, UseInterceptors, Delete, Param, HttpCode, ParseIntPipe } from '@nestjs/common';
 import { MemoService } from './memo.service';
 import { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -48,5 +48,13 @@ export class MemoController {
         await this.memoService.deleteMemo(userId,memoId);
 
         return { message: "메모가 성공적으로 삭제되었습니다." };
+    }
+
+    // 메모 수정 중 이미지 삭제
+    @Delete('memo/:memoId/:index')
+    @HttpCode(200)
+    async deleteImage(@Session() session: Record<string, any>,@Param('memoId') memoId: string, @Param('index',ParseIntPipe) index: number,) {
+        const userId = session.user ? session.user.id : 0;
+        await this.memoService.deleteOneFile(memoId, index, userId)
     }
 }

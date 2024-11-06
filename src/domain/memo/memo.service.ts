@@ -188,4 +188,25 @@ export class MemoService {
             throw error;
         }
     }
+
+    // 메모 이미지 삭제
+    async deleteOneFile(memoId: string, index: number, userId: string) {
+        try {
+            const fileSnapshot = await getDocs(
+                query(
+                    collection(db, 'files'),
+                    where('memoId', '==', memoId),
+                    where('index', '==', index)));
+    
+            const file = fileSnapshot.docs[0].data();
+    
+            const fileRef = ref(storage, `${userId}/${file.uuid}_${file.fileName}`);
+            await deleteObject(fileRef);
+            await deleteDoc(fileSnapshot.docs[0].ref);
+            return file;
+        } catch (error) {
+            console.error('이미지 삭제 중 오류:', error);
+            throw error;
+        }
+    }
 }
