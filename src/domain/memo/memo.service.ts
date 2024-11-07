@@ -239,4 +239,69 @@ export class MemoService {
             throw error;
         }
     }
+
+    // 북마크 모아보기
+    async findByUserIdBookmark(userId: string,): Promise<any[]> {
+        try {
+            // 'memos' 컬렉션에서 특정 userID를 가진 게시글만 가져옴
+            const querySnapshot = await getDocs(
+                query(
+                    collection(db, 'memos'),
+                    where('userId', '==', userId),
+                    where('bookmark', '==', true),
+                    orderBy('createdAt', 'desc')
+                )
+            );
+    
+            // 각 게시글과 관련된 파일 정보를 포함한 배열 반환
+            const memos = await Promise.all(querySnapshot.docs.map(async (memo) => {
+                const files = await this.getFilesByMemoId(memo.id);
+                return {
+                    id: memo.id,
+                    ...memo.data(),
+                    files: files,
+                };
+            }));
+            return memos;
+        } catch (error) {
+            console.log("findByUserId 실행 중 오류:", error);
+            throw error;
+        }
+    }
+
+    // 메모 북마크
+    async bookmarkMemo(memoId: string) {
+        try {
+            const memoRef = doc(db, 'memos', memoId);
+            // 업데이트할 데이터 객체 생성
+            const updateData = {
+                bookmark: true
+            };
+    
+            // 해당 문서 업데이트
+            await updateDoc(memoRef, updateData);
+            return ;
+        } catch (error) {
+            console.error('메모 수정 중 오류:', error);
+            throw error;
+        }
+    }
+
+    // 메모 언 북마크
+    async unBookmarkMemo(memoId: string) {
+        try {
+            const memoRef = doc(db, 'memos', memoId);
+            // 업데이트할 데이터 객체 생성
+            const updateData = {
+                bookmark: false
+            };
+    
+            // 해당 문서 업데이트
+            await updateDoc(memoRef, updateData);
+            return;
+        } catch (error) {
+            console.error('메모 수정 중 오류:', error);
+            throw error;
+        }
+    }
 }

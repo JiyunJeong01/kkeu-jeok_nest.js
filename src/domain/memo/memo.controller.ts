@@ -64,6 +64,29 @@ export class MemoController {
     async searchMemo(@Session() session: Record<string, any>, @Query('q') query: string) {
         const userId = session.user ? session.user.id : 0;
         const memos = await this.memoService.searchMemo(userId, query);
-        return { memos };
+        return { memos, user: session.user };
+    }
+
+    // 북마크 페이지 로딩
+    @Get('bookmark')
+    @Render('bookmark')
+    async bookmarkMemoPage(@Session() session: Record<string, any>){
+        const userId = session.user ? session.user.id : 0;
+        const memos = await this.memoService.findByUserIdBookmark(userId);
+        return { memos, user: session.user };
+    }
+
+    // 메모 북마크
+    @Put('bookmark/:memoId')
+    async bookmarkMemo(@Param('memoId') memoId: string,) {
+        await this.memoService.bookmarkMemo(memoId)
+        return { message: "북마크 되었습니다." };
+    }
+
+    // 메모 언 북마크
+    @Put("un-bookmark/:memoId")
+    async unBookmarkMemo(@Param('memoId') memoId: string,) {
+        await this.memoService.unBookmarkMemo(memoId)
+        return { message: "언북마크 되었습니다." };
     }
 }
