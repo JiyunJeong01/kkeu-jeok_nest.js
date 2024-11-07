@@ -15,7 +15,7 @@ export class MemoController {
             const memos = await this.memoService.findByUserId(userId);
             return res.render('index', { memos, user: session.user }); // index.hbs 렌더링
         } else {
-            return res.redirect('/home'); // 세션이 없으면 /home으로 리다이렉트
+            return res.render('home');
         }
     }
 
