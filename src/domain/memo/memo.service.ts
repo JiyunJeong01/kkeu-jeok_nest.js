@@ -64,7 +64,7 @@ export class MemoService {
     async createMemo(userId: string, content: string, files?: Array<Express.Multer.File>): Promise<string> {
         try {
             const timestamp = new Date(); // 현재 타임스탬프
-    
+
             // 새로운 메모 객체 생성
             const memoData = {
                 userId,
@@ -72,10 +72,10 @@ export class MemoService {
                 createdAt: timestamp,
                 updatedAt: timestamp
             };
-    
+
             // 'memos' 컬렉션에 새로운 메모 문서 추가
             const docRef = await addDoc(collection(db, 'memos'), memoData);
-    
+
             if (files && files.length > 0) {
                 await this.uploadFile(userId, docRef.id, files);
             }
@@ -104,7 +104,7 @@ export class MemoService {
                 const fileName = Buffer.from(file.originalname, 'ascii').toString('utf8');
                 const uuid = uuidv4();
                 const fileRef = ref(storage, `${userId}/${uuid}_${fileName}`);
-                
+
                 await uploadBytes(fileRef, file.buffer);
                 const downloadURL = await getDownloadURL(fileRef);
 
@@ -135,7 +135,7 @@ export class MemoService {
                 content: newContent,
                 updatedAt: timestamp
             };
-    
+
             // 해당 문서 업데이트
             await updateDoc(memoRef, updateData);
             if (files && files.length > 0) {
@@ -166,14 +166,14 @@ export class MemoService {
         try {
             // 메모와 관련된 파일 정보 가져오기
             const files = await this.getFilesByMemoId(memoId);
-    
+
             // Firebase Storage에서 파일 삭제
             const deletePromises = files.map(async (file) => {
                 const fileRef = ref(storage, `${userId}/${file.uuid}_${file.fileName}`);
                 await deleteObject(fileRef);
             });
             await Promise.all(deletePromises);
-    
+
             // Firestore에서 파일 문서 삭제
             const filesCollectionRef = collection(db, 'files');
             const q = query(filesCollectionRef, where('memoId', '==', memoId));
@@ -197,15 +197,45 @@ export class MemoService {
                     collection(db, 'files'),
                     where('memoId', '==', memoId),
                     where('index', '==', index)));
-    
+
             const file = fileSnapshot.docs[0].data();
-    
+
             const fileRef = ref(storage, `${userId}/${file.uuid}_${file.fileName}`);
             await deleteObject(fileRef);
             await deleteDoc(fileSnapshot.docs[0].ref);
             return file;
         } catch (error) {
             console.error('이미지 삭제 중 오류:', error);
+            throw error;
+        }
+    }
+
+    // 메모 서치
+    async searchMemo(userId: string, queryString: string): Promise<any[]> {
+        try {
+            // 'memos' 컬렉션에서 특정 userId를 가지며, content에 query가 포함된 게시글만 가져옴
+            const querySnapshot = await getDocs(
+                query(
+                    collection(db, 'memos'),
+                    where('userId', '==', userId),
+                    where('content', '>=', queryString),
+                    where('content', '<=', queryString + '\uf8ff'),
+                    orderBy('createdAt', 'desc')
+                )
+            );
+
+            // 각 게시글과 관련된 파일 정보를 포함한 배열 반환
+            const memos = await Promise.all(querySnapshot.docs.map(async (memo) => {
+                const files = await this.getFilesByMemoId(memo.id);
+                return {
+                    id: memo.id,
+                    ...memo.data(),
+                    files: files,
+                };
+            }));
+            return memos;
+        } catch (error) {
+            console.log("searchMemo 실행 중 오류:", error);
             throw error;
         }
     }

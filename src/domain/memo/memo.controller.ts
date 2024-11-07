@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Post, Res, Body, Session, UploadedFiles, UseInterceptors, Delete, Param, HttpCode, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Put, Post, Res, Body, Session, UploadedFiles, UseInterceptors, Delete, Param, HttpCode, ParseIntPipe, Query, Render } from '@nestjs/common';
 import { MemoService } from './memo.service';
 import { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -45,7 +45,7 @@ export class MemoController {
     async deleteMemo(@Session() session: Record<string, any>, @Param('memoId') memoId: string,) {
         const userId = session.user ? session.user.id : 0;
 
-        await this.memoService.deleteMemo(userId,memoId);
+        await this.memoService.deleteMemo(userId, memoId);
 
         return { message: "메모가 성공적으로 삭제되었습니다." };
     }
@@ -53,8 +53,17 @@ export class MemoController {
     // 메모 수정 중 이미지 삭제
     @Delete('memo/:memoId/:index')
     @HttpCode(200)
-    async deleteImage(@Session() session: Record<string, any>,@Param('memoId') memoId: string, @Param('index',ParseIntPipe) index: number,) {
+    async deleteImage(@Session() session: Record<string, any>, @Param('memoId') memoId: string, @Param('index', ParseIntPipe) index: number,) {
         const userId = session.user ? session.user.id : 0;
         await this.memoService.deleteOneFile(memoId, index, userId)
+    }
+
+    // 메모 탐색
+    @Get('search')
+    @Render('search')
+    async searchMemo(@Session() session: Record<string, any>, @Query('q') query: string) {
+        const userId = session.user ? session.user.id : 0;
+        const memos = await this.memoService.searchMemo(userId, query);
+        return { memos };
     }
 }
