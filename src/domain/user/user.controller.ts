@@ -6,7 +6,7 @@ import { Response } from 'express';
 
 @Controller('login')
 export class UserLoginController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   // 로그인 페이지
   @Get()
@@ -70,7 +70,7 @@ export class UserLoginController {
 
 @Controller('account')
 export class UserAccountController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   // 회원가입 페이지
   @Get()
@@ -114,5 +114,53 @@ export class UserAccountController {
     await this.userService.createAccount(email, name, hashedPassword);
 
     return;
+  }
+}
+
+@Controller('setting')
+export class UserSettingController {
+  constructor(private readonly userService: UserService) { }
+
+  // 셋팅 페이지
+  @Get()
+  @Render('setting')
+  async settingPage(@Session() session: Record<string, any>) {
+    const userId = session.user ? session.user.id : 0;
+    return {user: session.user};
+    return;
+  }
+
+  // 패스워드 변경
+  @Post('change-password')
+  async changePassword(
+    @Session() session: Record<string, any>,
+    @Res() res: Response,
+    @Body('currentPassword') currentPassword: string,
+    @Body('newPassword') newPassword: string,
+    @Body('confirmPassword') confirmPassword: string,
+  ) {
+    if (session.user) {
+      const userId = session.user.id;
+
+      // 현재 사용자 정보 가져오기
+      const user = await this.userService.getUserById(userId);
+
+      // 현재 비밀번호 확인
+      const isValidPassword = await bcryptjs.compare(currentPassword, user.password);
+      if (!isValidPassword) {
+        res.send('<script>alert("비밀번호가 일치하지 않습니다."); window.location.replace("/setting");</script>');
+        return 
+      }
+
+      if (newPassword === confirmPassword) {
+        const hashedPassword = await bcryptjs.hash(newPassword, 12);
+        await this.userService.changePassword(userId, hashedPassword);
+
+        res.send('<script>alert("비밀번호가 변경되었습니다."); window.location.replace("/");</script>');
+      }
+
+    } else {
+      return res.redirect('/');
+    }
   }
 }
