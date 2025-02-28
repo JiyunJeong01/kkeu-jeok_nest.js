@@ -48,6 +48,14 @@
   width: 30vw;
 }
 
+.width-\[25\]{
+  width: 25vw;
+}
+
+.width-\[400px\]{
+  width: 400px;
+}
+
 .height-\[50px\] {
   height: 50px
 }
@@ -57,8 +65,20 @@
   display: flex;
 }
 
+.flex-col {
+  flex-direction: column;
+}
+
 .justify-center {
   justify-content: center;
+}
+
+.justify-betweeb {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
 }
 
 /* border */
@@ -66,11 +86,46 @@
   border-radius: 30px;
 }
 
+.rounded-\[10px\] {
+  border-radius: 10px;
+}
+
+.border-\[\#ced4da\]{
+  border: 1px solid #ced4da;
+}
+
 /* 폰트 CSS */
+.text-blue {
+  color: #52C1FF;
+}
+
+.text-gray {
+  color: #999999;
+}
+
+.text-lightgray{
+  color: #ced4da;
+}
+
+.text-white {
+  color: #ffffff;
+}
 
 /* 간격 */
+.p-\[40px\]{
+  padding: 40px;
+}
+
 .pr-\[40px\] {
   padding-right: 40px;
+}
+
+.pl-\[10px\]{
+  padding-left: 10px;
+}
+
+.gap\[16px\] {
+  gap: 16px;
 }
 
 

@@ -28,7 +28,7 @@ const Header = () => {
                     </div>
 
                     <div className="right-text">
-                        <Link className="pr-[40px]" to="/login">로그인</Link> {/* a를 Link로 변경 */}
+                        <Link className="pr-[40px]" to="/login">로그인</Link>
                     </div>
                 </div>
             </nav>
