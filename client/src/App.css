@@ -32,7 +32,51 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+/* 배경 CSS */
+
+.bg-blue {
+  background-color: #52C1FF;
+}
+
+.width-\[30\] {
+  width: 30vw;
+}
+
+.height-\[50px\] {
+  height: 50px
+}
+
+/* 정렬 */
+.display-flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+/* border */
+.rounded-\[30px\] {
+  border-radius: 30px;
+}
+
+/* 폰트 CSS */
+
+/* 간격 */
+.pr-\[40px\] {
+  padding-right: 40px;
+}
+
+
+/* header 컴포넌트 */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
 }

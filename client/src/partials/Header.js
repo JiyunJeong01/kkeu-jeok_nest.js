@@ -1,16 +1,16 @@
 import React from 'react'
+import { Link } from "react-router-dom";
 
 const Header = () => {
     return (
         <header>
-            <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: '#52C1FF' }}>
+            <nav className="navbar navbar-expand-lg navbar-dark bg-blue">
                 <div className="container-fluid">
-                    <a className="navbar-brand" href="/">
+                    <Link className="navbar-brand" to="/">
                         <img src="header-logo.png" alt="로고 이미지" height="40" />
-                    </a>
+                    </Link>
 
-                    <button
-                        className="navbar-toggler"
+                    <button className="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#navbarTogglerDemo02"
@@ -21,8 +21,14 @@ const Header = () => {
                         <span className="navbar-toggler-icon"></span>
                     </button>
 
+                    <div class="collapse navbar-collapse justify-center" id="navbarTogglerDemo02">
+                        <form class="d-flex" action="/search" method="GET">
+                            <input class="form-control me-2 width-[30] height-[50px] rounded-[30px]" type="search" placeholder="검색" aria-label="Search" name="q"></input>
+                        </form>
+                    </div>
+
                     <div className="right-text">
-                        <a className="login" href="/login">로그인</a>
+                        <Link className="pr-[40px]" to="/memo">로그인</Link> {/* a를 Link로 변경 */}
                     </div>
                 </div>
             </nav>
