@@ -1,9 +1,31 @@
 import React from 'react'
 import { Link } from "react-router-dom";
 import { useLogin } from '../contexts/LoginContext';  // useLogin 훅 임포트
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
-    const { user } = useLogin();
+    const navigate = useNavigate();
+    const { user, logout } = useLogin();
+
+    const handleLogout = async () => {
+        try {
+            const response = await fetch('/user/logout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            
+            const result = await response.json();
+
+            if (result.success) {
+                logout();
+                navigate('/');
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            alert('로그아웃 중 오류가 발생했습니다.');
+        }
+    };
 
     return (
         <header>
@@ -34,7 +56,7 @@ const Header = () => {
 
                     <div className="right-text">
                         {user ? (
-                            <a className="pr-[40px]" href="/login/logout">로그아웃</a>
+                            <button className="pr-[40px]" onClick={handleLogout}>로그아웃</button>
                         ) : (
                             <Link className="pr-[40px]" to="/login">로그인</Link>
                         )}

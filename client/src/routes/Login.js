@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom'; // SPA환경에서 자동으로 조건을 만족할 때, 이동시키기 위해 사용
 import { useLogin } from '../contexts/LoginContext';
 
 const Login = () => {
@@ -34,7 +34,7 @@ const Login = () => {
         }
 
         try {
-            const response = await fetch('/login', {
+            const response = await fetch('/user/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })

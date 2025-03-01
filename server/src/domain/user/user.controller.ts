@@ -4,12 +4,12 @@ import * as bcryptjs from 'bcryptjs'; // bcryptjs 가져오기
 import { UserService } from './user.service'; // UserService import
 import { Response } from 'express';
 
-@Controller('login')
+@Controller('user')
 export class UserLoginController {
   constructor(private readonly userService: UserService) {}
 
   // 로그인 
-  @Post()
+  @Post('login')
   async login(@Body() loginDto: LoginDto, @Session() session: Record<string, any>, @Res() res: Response,) {
     const { email, password } = loginDto;
 
@@ -39,16 +39,16 @@ export class UserLoginController {
   }
 
   // 로그아웃
-  @Get('logout')
-  @Redirect('/') // 로그아웃 후 리다이렉트할 URL
-  async logout(@Session() session: Record<string, any>): Promise<void> {
-    return new Promise((resolve, reject) => {
-      session.destroy(err => {
-        if (err) {
-          throw new HttpException('Failed to log out', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        resolve(); // 성공적으로 로그아웃 처리
-      });
+  @Post('logout')
+  async logout(@Session() session: Record<string, any>, @Res() res: Response): Promise<void> {
+    session.destroy((err) => {
+      if (err) {
+        // 세션 제거 실패시 에러 메시지와 함께 응답
+        return res.json({ success: false, message: '로그아웃에 실패했습니다.' });
+      }
+
+      // 세션 제거 성공시 성공 메시지와 함께 응답
+      return res.json({ success: true, message: '로그아웃에 성공했습니다.' });
     });
   }
 }
