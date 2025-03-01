@@ -5,7 +5,7 @@ import { useLogin } from './contexts/LoginContext';
 import Home from './routes/Home';
 import MemoBoard from './routes/MemoBoard';
 import BookmarkBoard from './routes/BookmarkBoard';
-import Setting from './routes/setting';
+import Setting from './routes/Setting';
 import Login from './routes/Login';
 
 function App() {
