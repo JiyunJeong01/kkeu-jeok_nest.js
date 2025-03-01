@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'; 
+import { useLogin } from '../contexts/LoginContext';
 
 const Login = () => {
+    const navigate = useNavigate();
+    const { login } = useLogin();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(false);
-    const [error, setError] = useState('');
 
     useEffect(() => {
         // 쿠키에서 이메일 불러오기
@@ -38,16 +41,14 @@ const Login = () => {
             });
 
             const result = await response.json();
-            console.log(result)
 
             if (result.success) {
-                // 로그인 성공 시 페이지 이동이나 상태 업데이트
-                alert('로그인 성공!');
+                login(result.user);
+                navigate('/');
             } else {
                 alert(result.message)
             }
         } catch (err) {
-            setError('서버와 통신 중 오류가 발생했습니다.');
             console.error('로그인 요청 에러:', err);
         }
     };

@@ -8,13 +8,6 @@ import { Response } from 'express';
 export class UserLoginController {
   constructor(private readonly userService: UserService) {}
 
-  // 로그인 페이지
-  @Get()
-  @Render('login')
-  loginPage() {
-    return;
-  }
-
   // 로그인 
   @Post()
   async login(@Body() loginDto: LoginDto, @Session() session: Record<string, any>, @Res() res: Response,) {
@@ -25,13 +18,13 @@ export class UserLoginController {
 
     // 사용자가 존재하지 않는 경우
     if (!user) {
-      return { error: '아이디와 비밀번호를 다시 확인해주세요.' }; // 에러 메시지 반환
+      return res.json({ success: false, message: '아이디와 비밀번호를 다시 확인해주세요.' }); // 에러 메시지 반환
     }
 
     // 비밀번호가 일치하지 않는 경우
     const isValidPassword = await bcryptjs.compare(password, user.password);
     if (!isValidPassword) {
-      return { error: '아이디와 비밀번호를 다시 확인해주세요.' }; // 에러 메시지 반환
+      return res.json({ success: false, message: '아이디와 비밀번호를 다시 확인해주세요.' }); // 에러 메시지 반환
     }
 
     // 로그인 성공 시, 세션에 사용자 정보 저장
@@ -41,16 +34,8 @@ export class UserLoginController {
       name: user.name,
     };
 
-    // "아이디 저장하기" 체크박스 확인
-    if (loginDto['remember-check']) {
-      // 쿠키 설정
-      res.cookie('savedEmail', email, { maxAge: 3600 * 24 * 30 * 1000, httpOnly: true }); // 쿠키 설정
-    } else {
-      res.clearCookie('savedEmail');
-    }
-
     // 로그인 성공
-    res.redirect("/");
+    return res.json({ success: true, message: '로그인 성공!', user :{userId: user.id}});
   }
 
   // 로그아웃

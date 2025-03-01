@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link } from "react-router-dom";
+import { useLogin } from '../contexts/LoginContext';  // useLogin 훅 임포트
 
 const Header = () => {
+    const { user } = useLogin();
+
     return (
         <header>
             <nav className="navbar navbar-expand-lg navbar-dark bg-blue">
@@ -21,15 +24,22 @@ const Header = () => {
                         <span className="navbar-toggler-icon"></span>
                     </button>
 
-                    <div class="collapse navbar-collapse justify-center" id="navbarTogglerDemo02">
-                        <form class="d-flex" action="/search" method="GET">
-                            <input class="form-control me-2 width-[30] height-[50px] rounded-[30px]" type="search" placeholder="검색" aria-label="Search" name="q"></input>
-                        </form>
-                    </div>
+                    {user && (
+                        <div className="collapse navbar-collapse justify-center" id="navbarTogglerDemo02">
+                            <form className="d-flex" action="/search" method="GET">
+                                <input className="form-control me-2 width-[30] height-[50px] rounded-[30px]" type="search" placeholder="검색" aria-label="Search" name="q"></input>
+                            </form>
+                        </div>
+                    )}
 
                     <div className="right-text">
-                        <Link className="pr-[40px]" to="/login">로그인</Link>
+                        {user ? (
+                            <a className="pr-[40px]" href="/login/logout">로그아웃</a>
+                        ) : (
+                            <Link className="pr-[40px]" to="/login">로그인</Link>
+                        )}
                     </div>
+
                 </div>
             </nav>
         </header>

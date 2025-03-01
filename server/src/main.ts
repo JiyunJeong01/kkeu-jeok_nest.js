@@ -39,6 +39,13 @@ async function bootstrap() {
     cookie: { secure: configService.get<string>('NODE_ENV') === 'production' }, // 프로덕션 환경에서는 secure 쿠키 설정
   }));
 
+  // ⭐️ CORS 설정 추가
+  app.enableCors({
+    origin: configService.get<string>('CORS_ORIGIN') || '*', // 허용할 origin (여러개도 가능)
+    credentials: true, // 쿠키 주고받기 허용
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // 허용할 메서드
+  });
+
   await app.listen(configService.get<number>('PORT') || 5000);
 }
 bootstrap();
