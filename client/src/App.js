@@ -3,7 +3,9 @@ import './App.css';
 import { Route, Routes } from "react-router-dom"; // 라우팅 도와주는 모듈
 import { useLogin } from './contexts/LoginContext';
 import Home from './routes/Home';
-import Memo from './routes/Memo';
+import MemoBoard from './routes/MemoBoard';
+import BookmarkBoard from './routes/BookmarkBoard';
+import Setting from './routes/setting';
 import Login from './routes/Login';
 
 function App() {
@@ -11,7 +13,9 @@ function App() {
   
   return (
       <Routes>
-        <Route path="/" element={user ? <Memo /> : <Home />} />
+        <Route path="/" element={user ? <MemoBoard /> : <Home />} />
+        <Route path="/bookmark" element={user ? <BookmarkBoard /> : <Home />} />
+        <Route path="/setting" element={user ? <Setting /> : <Home />} />
         <Route path="/login" element={<Login />} />
       </Routes>
   );
