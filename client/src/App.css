@@ -48,12 +48,24 @@
   background-color: #999999;
 }
 
+.bg-white {
+  background-color: #ffffff;
+}
+
 .width-\[30\] {
   width: 30vw;
 }
 
 .width-\[25\]{
   width: 25vw;
+}
+
+.width-\[535px\]{
+  width: 535px;
+}
+
+.width-\[505px\]{
+  width: 505px;
 }
 
 .width-\[400px\]{
@@ -80,6 +92,14 @@
   height: 35px;
 }
 
+.min-height-\[145px\]{
+  min-height: 145px;
+}
+
+.min-height-\[120px\]{
+  height: 120px;
+}
+
 /* 정렬 */
 .display-flex {
   display: flex;
@@ -101,6 +121,10 @@
   align-items: center;
 }
 
+.position-relative {
+  position: relative;
+}
+
 /* border */
 .rounded-\[30px\] {
   border-radius: 30px;
@@ -112,6 +136,10 @@
 
 .border-\[\#ced4da\]{
   border: 1px solid #ced4da;
+}
+
+.border-none{
+  border: none;
 }
 
 /* 폰트 CSS */
@@ -141,6 +169,10 @@
 /* 간격 */
 .p-\[40px\]{
   padding: 40px;
+}
+
+.p-\[15px\]{
+  padding: 15px;
 }
 
 .pr-\[40px\] {
@@ -188,4 +220,36 @@
   background-color: #D7F1FF;
   color: #09A7FF;
   font-weight: bolder;
+}
+
+/* icon 관련 */
+.image {
+  cursor: pointer;
+  position: absolute;
+  width: 22.2px;
+  height: 18.7px;
+  bottom: 15px;
+  left: 17px;
+  color: #868e96;
+}
+
+.file{
+  cursor: pointer;
+  position: absolute;
+  width: 22.2px;
+  height: 18.7px;
+  bottom: 15px;
+  left: 50px;
+  color: #868e96;
+
+}
+
+
+.send {
+  cursor: pointer;
+  position: absolute;
+  width: 22.2px;
+  height: 18.7px;
+  bottom: 15px;
+  right: 17px;
 }

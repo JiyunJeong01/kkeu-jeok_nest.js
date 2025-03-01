@@ -22,6 +22,11 @@ button {
   all: unset; 
 }
 
+/* textarea 스타일 초기화 */
+textarea {
+  all: unset;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
