@@ -52,6 +52,10 @@
   background-color: #ffffff;
 }
 
+.width-\[100\%\]{
+  width: 100%;
+}
+
 .width-\[30\] {
   width: 30vw;
 }
@@ -166,6 +170,10 @@
   text-align: center;
 }
 
+.text-size\[11px\]{
+  font-size: 11px;
+}
+
 /* 간격 */
 .p-\[40px\]{
   padding: 40px;
@@ -175,8 +183,24 @@
   padding: 15px;
 }
 
+.pt-\[10px\]{
+  padding-top: 10px;
+}
+
+.pt-\[5px\]{
+  padding-top: 5px;
+}
+
 .pr-\[40px\] {
   padding-right: 40px;
+}
+
+.pr-\[15px\] {
+  padding-right: 15px;
+}
+
+.pl-\[15px\] {
+  padding-left: 15px;
 }
 
 .pl-\[10px\]{
@@ -191,10 +215,17 @@
   gap: 10px;
 }
 
+.m-\[15px\]{
+  margin: 15px;
+}
+
 .mt-\[10px\]{
   margin-top: 10px;
 }
 
+.m-\[0px\]{
+  margin: 0px;
+}
 
 /* header 컴포넌트 */
 .navbar {
@@ -252,4 +283,41 @@
   height: 18.7px;
   bottom: 15px;
   right: 17px;
+}
+
+.star {
+  cursor: pointer;
+  position: absolute;
+  bottom: 15px;
+  right: 101px;
+  width: 14px;
+  height: 18.7px;
+  color: #868e96;
+}
+
+.icon-start-edit {
+  cursor: pointer;
+  position: absolute;
+  bottom: 14px;
+  right: 55px;
+  width: 18px;
+  height: 18px;
+}
+
+.icon-end-edit {
+  cursor: pointer;
+  position: absolute;
+  bottom: 14px;
+  right: 55px;
+  width: 20px;
+  height: 15px;
+}
+
+.icon-delete {
+  cursor: pointer;
+  position: absolute;
+  bottom: 12px;
+  right: 19px;
+  width: 14px;
+  height: 18px;
 }
