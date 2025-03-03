@@ -1,49 +1,99 @@
 import React, { useState } from 'react';
 
-const Memo = () => {
+const Memo = ({ memos }) => {
+    const [editingMemoId, setEditingMemoId] = useState(null);  // 개별 memo의 editing 상태를 관리
 
-    const [isEditing, setIsEditing] = useState(false);
+    const handleEditClick = (memoId) => {
+        setEditingMemoId(memoId); // 특정 memo의 편집 상태 토글
+    };
+
+    const handleDoneClick = () => {
+        setEditingMemoId(null); // 편집 종료
+    };
 
     return (
-        <div className='display-flex justify-center m-[15px]'>
-            <div className='width-[535px] min-height-[145px] bg-white rounded-[10px] pl-[15px] pr-[15px] position-relative '>
-                <div className='text-size[11px] text-gray pt-[10px]'>
-                    2025-00-00 00:00
-                </div>
-                {!isEditing &&(<div className='width-[505px] pt-[5px]'>
-                    여기에 적은 내용이 들어감
-                </div>)}
-                {isEditing && (<textarea className='width-[505px] border-none pt-[5px]'
-                    name="content"
-                    cols="30"
-                    rows="1">
-                    여기에 수정할 텍스트 내용이 들어감
-                </textarea>)}
+        <div className='display-flex flex-col items-center gap[16px] m-[15px]'>
+            {memos.map((memo) => (
+                <div
+                    key={memo.id}
+                    className='display-flex flex-col width-[535px] bg-white rounded-[10px] pl-[15px] pr-[15px] gap[5px] position-relative'>
+                    <div className='text-size[11px] text-gray pt-[10px]'>
+                        {toDateString(memo.createdAt)}
+                    </div>
 
-                <div className="row row-cols-4 m-[0px] pt-[5px]">
-                    <div className='bg-blue height-[35px] rounded-[10px]'> </div>
-                    <div className='bg-blue height-[35px] rounded-[10px]'> </div>
-                    <div className='bg-blue height-[35px] rounded-[10px]'> </div>
-                    <div className='bg-blue height-[35px] rounded-[10px]'> </div>
-                </div>
+                    {/* 개별 memo의 편집 상태 관리 */}
+                    {editingMemoId === memo.id ? (
+                        <textarea
+                            className='width-[505px] border-none'
+                            name="content"
+                            cols="30"
+                            rows="1"
+                            value={memo.content}
+                            onChange={(e) => {/* 상태 업데이트 로직 필요 */}}
+                        />
+                    ) : (
+                        <div className='width-[505px]'>
+                            {memo.content}
+                        </div>
+                    )}
 
-                <div className='pt-[5px]'>
-                    여기에 파일 미리보기가 들어감
-                </div>
+                    {/* 파일 렌더링 */}
+                    <div className='m-[0px]'>
+                        {memo.files && (
+                            <>
+                                <div className="row row-cols-4">
+                                    {memo.files
+                                        .filter(file => file.type.startsWith('image/'))
+                                        .map((file, index) => (
+                                            <div key={index} className='rounded-[10px]'>
+                                                <img className='width-[100%] height-[100%] cover rounded-[10px]' src={file.downloadURL} alt={file.fileName}></img>
+                                            </div>
+                                        ))}
+                                </div>
 
-                <div className='height-[35px]'>
-                    {isEditing && (<span className="material-symbols-outlined image">image</span>)}
-                    {isEditing && (<span className="material-symbols-outlined file">attach_file</span>)}
-                    <span class="material-symbols-outlined star">kid_star</span>
-                    {isEditing ? 
-                    (<img class="icon-end-edit" src="/img/done.png" alt="" onClick={() => setIsEditing(false)}></img>) 
-                    : (<img class="icon-start-edit" src="/img/edit.png" alt="" onClick={() => setIsEditing(true)}></img>)}
-                    <img class="icon-delete" src="/img/delete.png" alt=""></img>
+                                <div>
+                                    {memo.files
+                                        .filter(file => !file.type.startsWith('image/'))
+                                        .map((file, index) => (
+                                            <a key={index} href={file.downloadURL} download>
+                                                <div className='display-flex border-[#ced4da] rounded-[30px] p-[10px]'>
+                                                    <span className="material-symbols-outlined pl-[5px]">attach_file</span>
+                                                    <span className='pl-[5px]'>{file.fileName}</span>
+                                                </div>
+                                            </a>
+                                        ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+
+                    {/* 편집 및 삭제 아이콘 */}
+                    <div className='height-[35px]'>
+                        {editingMemoId === memo.id ? (
+                            <span className="material-symbols-outlined image">image</span>
+                        ) : null}
+                        {editingMemoId === memo.id ? (
+                            <span className="material-symbols-outlined file">attach_file</span>
+                        ) : null}
+                        <span className="material-symbols-outlined star">kid_star</span>
+                        {editingMemoId === memo.id ? (
+                            <img className="icon-end-edit" src="/img/done.png" alt="" onClick={handleDoneClick} />
+                        ) : (
+                            <img className="icon-start-edit" src="/img/edit.png" alt="" onClick={() => handleEditClick(memo.id)} />
+                        )}
+                        <img className="icon-delete" src="/img/delete.png" alt="" />
+                    </div>
                 </div>
-            </div>
+            ))}
         </div>
-
     );
 };
 
-export default Memo
+// timestamp 변경
+const toDateString = (timestamp) => {
+    if (!timestamp || !timestamp.seconds) return '';  // 예외처리
+    const date = new Date(timestamp.seconds * 1000);
+    return date.toLocaleString();  // "2025-03-03 15:30:00" 이런식으로 출력
+};
+
+export default Memo;
