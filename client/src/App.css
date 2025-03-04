@@ -52,7 +52,7 @@
   background-color: #ffffff;
 }
 
-.width-\[100\%\]{
+.width-\[100\%\] {
   width: 100%;
 }
 
@@ -60,31 +60,31 @@
   width: 30vw;
 }
 
-.width-\[25\]{
+.width-\[25\] {
   width: 25vw;
 }
 
-.width-\[535px\]{
+.width-\[535px\] {
   width: 535px;
 }
 
-.width-\[505px\]{
+.width-\[505px\] {
   width: 505px;
 }
 
-.width-\[400px\]{
+.width-\[400px\] {
   width: 400px;
 }
 
-.width-\[250px\]{
+.width-\[250px\] {
   width: 250px;
 }
 
-.width-\[135px\]{
+.width-\[135px\] {
   width: 135px;
 }
 
-.height-\[100\%\]{
+.height-\[100\%\] {
   height: 100%;
 }
 
@@ -100,7 +100,7 @@
   height: 35px;
 }
 
-.min-height-\[120px\]{
+.min-height-\[120px\] {
   height: 120px;
 }
 
@@ -142,11 +142,11 @@
   border-radius: 10px;
 }
 
-.border-\[\#ced4da\]{
+.border-\[\#ced4da\] {
   border: 1px solid #ced4da;
 }
 
-.border-none{
+.border-none {
   border: none;
 }
 
@@ -154,6 +154,7 @@
 .text-black {
   color: #000000;
 }
+
 .text-blue {
   color: #52C1FF;
 }
@@ -162,7 +163,7 @@
   color: #999999;
 }
 
-.text-lightgray{
+.text-lightgray {
   color: #ced4da;
 }
 
@@ -174,32 +175,32 @@
   text-align: center;
 }
 
-.text-size\[11px\]{
+.text-size\[11px\] {
   font-size: 11px;
 }
 
 /* 간격 */
-.p-\[40px\]{
+.p-\[40px\] {
   padding: 40px;
 }
 
-.p-\[15px\]{
+.p-\[15px\] {
   padding: 15px;
 }
 
-.p-\[10px\]{
+.p-\[10px\] {
   padding: 10px;
 }
 
-.p-\[0px\]{
+.p-\[0px\] {
   padding: 0px;
 }
 
-.pt-\[10px\]{
+.pt-\[10px\] {
   padding-top: 10px;
 }
 
-.pt-\[5px\]{
+.pt-\[5px\] {
   padding-top: 5px;
 }
 
@@ -215,11 +216,11 @@
   padding-left: 15px;
 }
 
-.pl-\[10px\]{
+.pl-\[10px\] {
   padding-left: 10px;
 }
 
-.pl-\[5px\]{
+.pl-\[5px\] {
   padding-left: 5px;
 }
 
@@ -227,23 +228,23 @@
   gap: 16px;
 }
 
-.gap\[10px\]{
+.gap\[10px\] {
   gap: 10px;
 }
 
-.gap\[5px\]{
+.gap\[5px\] {
   gap: 5px;
 }
 
-.m-\[15px\]{
+.m-\[15px\] {
   margin: 15px;
 }
 
-.mt-\[10px\]{
+.mt-\[10px\] {
   margin-top: 10px;
 }
 
-.m-\[0px\]{
+.m-\[0px\] {
   margin: 0px;
 }
 
@@ -284,7 +285,7 @@
   color: #868e96;
 }
 
-.file{
+.file {
   cursor: pointer;
   position: absolute;
   width: 22.2px;
@@ -340,4 +341,11 @@
   right: 19px;
   width: 14px;
   height: 18px;
+}
+
+.icon-close {
+  position: absolute;
+  top: 9px;
+  right: 20px;
+  cursor: pointer;
 }

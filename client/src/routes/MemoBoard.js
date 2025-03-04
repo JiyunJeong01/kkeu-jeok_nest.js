@@ -28,7 +28,7 @@ const MemoBoard = () => {
         };
 
         fetchMemos();
-    }, []);
+    }, [memos]);
 
     return (
         <div>
