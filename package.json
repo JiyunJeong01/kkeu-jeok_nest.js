@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "backend": "cd server && npm start",
+    "frontend": "cd client && npm start",
+    "start": "concurrently \"npm run backend\" \"npm run frontend\" "
+  }
+}
