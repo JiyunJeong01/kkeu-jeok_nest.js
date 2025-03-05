@@ -32,9 +32,9 @@ const MemoBoard = () => {
 
     return (
         <div>
-            <h1 className='text-center'> 메모입니다.</h1>
+            <h1 className='text-center text-2xl font-semibold mb-4'> 메모입니다.</h1>
             <MemoCreate></MemoCreate>
-            <div className='display-flex flex-col'>
+            <div className='flex flex-col'>
                 <Tap></Tap>
                 <Memo memos={memos}></Memo>
             </div>

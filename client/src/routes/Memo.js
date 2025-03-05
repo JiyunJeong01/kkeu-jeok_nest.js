@@ -12,19 +12,19 @@ const Memo = ({ memos }) => {
     };
 
     return (
-        <div className='display-flex flex-col items-center gap[16px] m-[15px]'>
+        <div className='flex flex-col items-center gap-4 m-4'>
             {memos.map((memo) => (
                 <div
                     key={memo.id}
-                    className='display-flex flex-col width-[535px] bg-white rounded-[10px] pl-[15px] pr-[15px] gap[5px] position-relative'>
-                    <div className='text-size[11px] text-gray pt-[10px]'>
+                    className='flex flex-col w-[535px] bg-white rounded-lg pl-[15px] pr-[15px] gap-1 relative'>
+                    <div className='text-xs text-gray pt-2'>
                         {toDateString(memo.createdAt)}
                     </div>
 
                     {/* 개별 memo의 편집 상태 관리 */}
                     {editingMemoId === memo.id ? (
                         <textarea
-                            className='width-[505px] border-none'
+                            className='w-[505px] border-none'
                             name="content"
                             cols="30"
                             rows="1"
@@ -32,21 +32,21 @@ const Memo = ({ memos }) => {
                             onChange={(e) => {/* 상태 업데이트 로직 필요 */}}
                         />
                     ) : (
-                        <div className='width-[505px]'>
+                        <div className='w-[505px]'>
                             {memo.content}
                         </div>
                     )}
 
                     {/* 파일 렌더링 */}
-                    <div className='m-[0px]'>
+                    <div>
                         {memo.files && (
                             <>
-                                <div className="row row-cols-4">
+                                <div className="grid grid-cols-4 gap-2">
                                     {memo.files
                                         .filter(file => file.type.startsWith('image/'))
                                         .map((file, index) => (
                                             <div key={index} className='rounded-[10px]'>
-                                                <img className='width-[100%] height-[100%] cover rounded-[10px]' src={file.downloadURL} alt={file.fileName}></img>
+                                                <img className='w-full h-full object-cover rounded-lg' src={file.downloadURL} alt={file.fileName}></img>
                                             </div>
                                         ))}
                                 </div>
@@ -56,9 +56,9 @@ const Memo = ({ memos }) => {
                                         .filter(file => !file.type.startsWith('image/'))
                                         .map((file, index) => (
                                             <a key={index} href={file.downloadURL} download>
-                                                <div className='display-flex border-[#ced4da] rounded-[30px] p-[10px]'>
-                                                    <span className="material-symbols-outlined pl-[5px]">attach_file</span>
-                                                    <span className='pl-[5px]'>{file.fileName}</span>
+                                                <div className='flex border border-gray-300 rounded-full p-2'>
+                                                    <span className="material-symbols-outlined pl-1">attach_file</span>
+                                                    <span className='pl-1'>{file.fileName}</span>
                                                 </div>
                                             </a>
                                         ))}
@@ -68,7 +68,7 @@ const Memo = ({ memos }) => {
                     </div>
 
                     {/* 편집 및 삭제 아이콘 */}
-                    <div className='height-[35px]'>
+                    <div className='h-[40px]'>
                         {editingMemoId === memo.id ? (
                             <span className="material-symbols-outlined image">image</span>
                         ) : null}

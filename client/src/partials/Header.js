@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Link } from "react-router-dom";
 import { useLogin } from '../contexts/LoginContext';  // useLogin 훅 임포트
 import { useNavigate } from 'react-router-dom';
@@ -28,10 +28,10 @@ const Header = () => {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-blue">
-            <div className="container-fluid">
+        <nav className="sticky top-0 z-30 bg-blue pt-[0.5rem] pb-[0.5rem]">
+            <div className="container-fluid flex items-center justify-between">
                 <Link className="navbar-brand" to="/">
-                    <img src="header-logo.png" alt="로고 이미지" height="40" />
+                    <img src="header-logo.png" alt="로고 이미지" className="h-[40px] w-auto" />
                 </Link>
 
                 <button className="navbar-toggler"
@@ -46,11 +46,24 @@ const Header = () => {
                 </button>
 
                 {user && (
-                    <div className="collapse navbar-collapse justify-center" id="navbarTogglerDemo02">
-                        <form className="d-flex" action="/search" method="GET">
-                            <input className="form-control me-2 width-[30] height-[50px] rounded-[30px]" type="search" placeholder="검색" aria-label="Search" name="q"></input>
-                        </form>
-                    </div>
+                    <form className="max-w-md mx-auto" action="#" method="get">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                name="search"
+                                className="w-full px-4 py-2 border rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="검색어를 입력하세요..."
+                            />
+                            <button
+                                type="submit"
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-blue-600"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 18l6-6-6-6M6 12h12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
                 )}
 
                 <div className="right-text">
@@ -66,4 +79,4 @@ const Header = () => {
     );
 };
 
-export default Header
+export default Header;

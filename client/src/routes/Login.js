@@ -54,20 +54,20 @@ const Login = () => {
     };
 
     return (
-        <div className='display-flex justify-center'>
-            <div className='width-[400px] display-flex flex-col items-center p-[40px] gap[16px]'>
-                <h2 className='text-blue'>Login</h2>
-                <form className='display-flex flex-col gap[16px]' id='login-form' onSubmit={handleSubmit}>
-                    <input className='width-[25] height-[50px] rounded-[10px] border-[#ced4da] pl-[10px]' type="text" name="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-                    <input className='width-[25] height-[50px] rounded-[10px] border-[#ced4da] pl-[10px]' type="password" name="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}/>
-                    <div className='text-gray display-flex justify-betweeb'>
+        <div className='flex justify-center'>
+            <div className='w-[400px] flex flex-col items-center p-[40px] gap-[16px]'>
+                <h2 className='text-blue text-2xl'>Login</h2>
+                <form className='flex flex-col w-full gap-[16px]' id='login-form' onSubmit={handleSubmit}>
+                    <input className='h-[50px] rounded-[10px] border border-[#ced4da] pl-[10px]' type="text" name="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+                    <input className='h-[50px] rounded-[10px] border border-[#ced4da] pl-[10px]' type="password" name="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}/>
+                    <div className='text-gray flex justify-between'>
                         <label htmlFor="remember-check">
                             <input type="checkbox" name="remember-check" onChange={(e) => setRemember(e.target.checked)} />
                             아이디 저장하기
                         </label>
                         <Link to="/account">회원가입</Link>
                     </div>
-                    <input className='bg-blue height-[50px] text-white rounded-[10px] border-[#ced4da]' type="submit" value="Login" />
+                    <input className='bg-blue h-[50px] text-white rounded-[10px] border border-[#ced4da]' type="submit" value="Login" />
                 </form>
             </div>
         </div>

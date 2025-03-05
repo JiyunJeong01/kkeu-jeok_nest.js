@@ -97,12 +97,12 @@ const MemoCreate = () => {
     };
 
     return (
-        <div className="display-flex justify-center items-center">
-            <form onSubmit={handleSubmit} className="width-[535px] min-height-[145px] bg-white rounded-[10px] position-relative">
+        <div className="flex justify-center items-center">
+            <form onSubmit={handleSubmit} className="w-[535px] min-h-[145px] bg-white rounded-[10px] relative">
 
                 {/* 텍스트 입력 */}
                 <textarea
-                    className="width-[505px] min-height-[120px] border-none p-[15px]"
+                    className="w-[505px] min-h-[120px] border-none p-[15px]"
                     placeholder="무엇을 저장할까요?"
                     name="content"
                     value={content}
@@ -111,10 +111,10 @@ const MemoCreate = () => {
                 />
 
                 {/* 이미지 미리보기 */}
-                <div className="row row-cols-4 m-[0px]">
+                <div className="grid grid-cols-4 gap-2 m-0">
                     {images.map((image, index) => (
-                        <div key={index} className="rounded-[10px] position-relative">
-                            <img src={image.preview} alt={`upload-${index}`} className="width-[100%] cover rounded-[10px]" />
+                        <div key={index} className="rounded-[10px] relative">
+                            <img src={image.preview} alt={`upload-${index}`} className="w-full h-auto object-cover rounded-[10px]" />
                             <span className="material-symbols-outlined icon-close" onClick={() => removeImage(index)}>close</span>
                         </div>
                     ))}
@@ -123,7 +123,7 @@ const MemoCreate = () => {
                 {/* 파일 미리보기 */}
                 {file && (
                     <a href={file.downloadURL} download>
-                        <div className='display-flex border-[#ced4da] rounded-[30px] p-[10px] position-relative'>
+                        <div className='flex border border-[#ced4da] rounded-[30px] p-[10px] relative'>
                             <span className="material-symbols-outlined pl-[5px]">attach_file</span>
                             <span className='pl-[5px]'>{file.name}</span>
                             <span className="material-symbols-outlined icon-close" onClick={removeFile}>close</span>
@@ -150,7 +150,7 @@ const MemoCreate = () => {
                 />
 
                 {/* 버튼 영역 */}
-                <div className='height-[35px] pt-[5px]'>
+                <div className='h-[35px] pt-[5px]'>
                     <span className="material-symbols-outlined image" onClick={handleImageSelect}>image</span>
                     <span className="material-symbols-outlined file" onClick={handleFileSelect}>attach_file</span>
                     <button type="submit">
