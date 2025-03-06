@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 const MemoCreate = () => {
     const [images, setImages] = useState([]);
@@ -6,8 +6,17 @@ const MemoCreate = () => {
     const [content, setContent] = useState(''); // 텍스트 내용 상태 추가
     const fileInputRef = useRef(null);
     const documentInputRef = useRef(null); // 파일 업로드용 ref
+    const textareaRef = useRef(null); // 파일 높이 
 
     const maxImages = 4;
+
+    // textarea 높이가 바뀔 때마다 실행
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = "auto";
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    }, [content]);
 
     // 이미지 선택 핸들러
     const handleImageSelect = () => {
@@ -102,9 +111,9 @@ const MemoCreate = () => {
 
                 {/* 텍스트 입력 */}
                 <textarea
-                    className="w-[505px] min-h-[120px] border-none p-[15px]"
+                    ref={textareaRef}
+                    className="w-[505px] border-none p-[15px]"
                     placeholder="무엇을 저장할까요?"
-                    name="content"
                     value={content}
                     onChange={handleContentChange}
                     rows="1"
