@@ -51,12 +51,17 @@ export class MemoController {
 
     // 메모 삭제
     @Delete('/:memoId')
-    async deleteMemo(@Session() session: Record<string, any>, @Param('memoId') memoId: string,) {
-        const userId = session.user ? session.user.id : 0;
+    async deleteMemo(@Session() session: Record<string, any>, @Param('memoId') memoId: string, @Res() res: Response) {
+        
+        // 세션 정보 조회 = 사용자가 있는지 확인
+        if (!session.user) {
+            return res.json({ success: false, message: '재로그인 후 시도해주세요' });
+        }
 
+        const userId = session.user.id;
         await this.memoService.deleteMemo(userId, memoId);
 
-        return { message: "메모가 성공적으로 삭제되었습니다." };
+        return res.json({ success: true, message: "메모가 성공적으로 삭제되었습니다." });
     }
 
     // 메모 수정 중 이미지 삭제

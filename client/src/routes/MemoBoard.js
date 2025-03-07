@@ -36,7 +36,7 @@ const MemoBoard = () => {
             <MemoCreate></MemoCreate>
             <div className='flex flex-col'>
                 <Tap></Tap>
-                <Memo memos={memos}></Memo>
+                <Memo memos={memos} setMemos={setMemos}></Memo>
             </div>
         </div>
     );

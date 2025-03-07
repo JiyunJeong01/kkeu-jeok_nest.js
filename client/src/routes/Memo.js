@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Memo = ({ memos }) => {
+const Memo = ({ memos, setMemos  }) => {
     const [editingMemoId, setEditingMemoId] = useState(null);  // 개별 memo의 editing 상태를 관리
 
     const handleEditClick = (memoId) => {
@@ -9,6 +9,27 @@ const Memo = ({ memos }) => {
 
     const handleDoneClick = () => {
         setEditingMemoId(null); // 편집 종료
+    };
+
+    // 삭제 기능 추가
+    const handleDeleteClick = async (memoId) => {
+        try {
+            const response = await fetch(`/memo/${memoId}`, {
+                method: 'DELETE',
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                // 삭제 성공 시, memos 상태에서 해당 memo 제거
+                setMemos((prevMemos) => prevMemos.filter(memo => memo.id !== memoId));
+                alert(result.message);
+            } else {
+                alert(result.message);
+            }
+        } catch (err) {
+            console.error('메모 삭제 에러:', err);
+            alert('메모 삭제 중 오류 발생');
+        }
     };
 
     return (
@@ -81,7 +102,7 @@ const Memo = ({ memos }) => {
                         ) : (
                             <img className="icon-start-edit" src="/img/edit.png" alt="" onClick={() => handleEditClick(memo.id)} />
                         )}
-                        <img className="icon-delete" src="/img/delete.png" alt="" />
+                        <img className="icon-delete" src="/img/delete.png" alt="" onClick={() => handleDeleteClick(memo.id)}/>
                     </div>
                 </div>
             ))}
