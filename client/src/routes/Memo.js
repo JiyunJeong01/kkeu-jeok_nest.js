@@ -1,14 +1,131 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
-const Memo = ({ memos, setMemos  }) => {
-    const [editingMemoId, setEditingMemoId] = useState(null);  // 개별 memo의 editing 상태를 관리
+const Memo = ({ memos, setMemos }) => {
+    const [images, setImages] = useState([]);
+    const [file, setFile] = useState(null);
+    const [deleteFiles, setDeleteFiles] = useState([]);  // 삭제된 이미지 관리
+    const [content, setContent] = useState('');
+    const fileInputRef = useRef(null);
+    const documentInputRef = useRef(null);
 
-    const handleEditClick = (memoId) => {
-        setEditingMemoId(memoId); // 특정 memo의 편집 상태 토글
+    const maxImages = 4;
+
+    const [editingMemoId, setEditingMemoId] = useState(null); // 개별 memo의 editing 상태를 관리
+
+    // 편집 시작
+    const handleEditClick = (memoId, content) => {
+        setEditingMemoId(memoId);
+        setContent(content); // 해당 메모의 내용을 content에 설정
     };
 
-    const handleDoneClick = () => {
+    // 편집 완료
+    const handleDoneClick = async (memoId) => {
         setEditingMemoId(null); // 편집 종료
+        await handleUpdate(memoId); // 수정된 데이터 전송
+    };
+
+    // 이미지 선택 핸들러
+    const handleImageSelect = () => {
+        if (images.length >= maxImages) {
+            alert(`이미지는 최대 ${maxImages}개까지 추가할 수 있습니다.`);
+            return;
+        }
+        fileInputRef.current?.click();
+    };
+
+    // 파일 선택 핸들러
+    const handleFileSelect = () => {
+        if (file) {
+            alert('이미 파일을 추가했습니다. 기존 파일을 삭제하고 새 파일을 추가해주세요.');
+            return;
+        }
+        documentInputRef.current?.click();
+    };
+
+    // 이미지 업로드 처리
+    const handleImageUpload = (event) => {
+        const files = event.target.files;
+
+        if (files.length + images.length > maxImages) {
+            alert(`이미지는 최대 ${maxImages}개까지 추가할 수 있습니다.`);
+            return;
+        }
+
+        const newImages = Array.from(files).map(file => ({
+            file,
+            preview: URL.createObjectURL(file),
+        }));
+
+        setImages(prevImages => [...prevImages, ...newImages]);
+    };
+
+    // 파일 업로드 처리
+    const handleFileUpload = (event) => {
+        const uploadedFile = event.target.files[0];
+        setFile(uploadedFile);
+    };
+
+    // 이미지 삭제
+    const removeImage = (index, memoId) => {
+        if (memoId) {
+            // 서버에서 삭제할 이미지를 처리
+            const deletedImage = memos.find(memo => memo.id === memoId).files[index];
+            setDeleteFiles(prev => [...prev, deletedImage]); // 삭제된 이미지를 상태에 추가
+        }
+        setImages(images.filter((_, i) => i !== index)); // 로컬 상태에서 제거
+    };
+
+    const removeFile = (index, memoId) => {
+        if (memoId) {
+            // 서버에서 삭제할 파일을 처리
+            const deletedFile = memos.find(memo => memo.id === memoId).files[index];
+            setDeleteFiles(prev => [...prev, deletedFile]); // 삭제된 파일을 상태에 추가
+        }
+    
+        // 로컬 상태에서 해당 파일 제거
+        setFile(null);
+    };
+
+    // 텍스트 변경
+    const handleContentChange = (event) => {
+        setContent(event.target.value);
+    };
+
+    // 수정 요청 처리
+    const handleUpdate = async (memoId) => {
+        const formData = new FormData();
+        formData.append('content', content);
+        images.forEach(img => {
+            if (img.file) {
+                formData.append('files', img.file); // 새로 추가된 파일만 전송
+            }
+        });
+        if (file) {
+            formData.append('files', file);
+        }
+
+        // 삭제된 이미지들을 전송 (서버에서 삭제해야 할 이미지들)
+        deleteFiles.forEach(file => {
+            formData.append('deletedFiles', file.id); // 파일 ID를 서버에 보내서 삭제
+        });
+
+        try {
+            const response = await fetch(`/memo/${memoId}`, {
+                method: 'PUT',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert(result.message);
+                onUpdate(result.updatedMemo); // 업데이트 후 상위 컴포넌트에 변경 알림
+            } else {
+                alert(result.message);
+            }
+        } catch (err) {
+            console.error('메모 수정 요청 에러:', err);
+        }
     };
 
     // 삭제 기능 추가
@@ -20,7 +137,6 @@ const Memo = ({ memos, setMemos  }) => {
 
             const result = await response.json();
             if (result.success) {
-                // 삭제 성공 시, memos 상태에서 해당 memo 제거
                 setMemos((prevMemos) => prevMemos.filter(memo => memo.id !== memoId));
                 alert(result.message);
             } else {
@@ -49,8 +165,8 @@ const Memo = ({ memos, setMemos  }) => {
                             name="content"
                             cols="30"
                             rows="1"
-                            value={memo.content}
-                            onChange={(e) => {/* 상태 업데이트 로직 필요 */}}
+                            value={content}  // 수정 중인 내용은 content로 관리
+                            onChange={handleContentChange}
                         />
                     ) : (
                         <div className='w-[505px]'>
@@ -68,6 +184,9 @@ const Memo = ({ memos, setMemos  }) => {
                                         .map((file, index) => (
                                             <div key={index} className='rounded-[10px]'>
                                                 <img className='w-full h-full object-cover rounded-lg' src={file.downloadURL} alt={file.fileName}></img>
+                                                {editingMemoId === memo.id && (
+                                                    <span className="material-symbols-outlined icon-close" onClick={() => removeImage(index, memo.id)}>close</span>
+                                                )}
                                             </div>
                                         ))}
                                 </div>
@@ -80,6 +199,9 @@ const Memo = ({ memos, setMemos  }) => {
                                                 <div className='flex border border-gray-300 rounded-full p-2'>
                                                     <span className="material-symbols-outlined pl-1">attach_file</span>
                                                     <span className='pl-1'>{file.fileName}</span>
+                                                    {editingMemoId === memo.id && (
+                                                        <span className="material-symbols-outlined icon-close" onClick={() => removeFile(index, memo.id)}>close</span>
+                                                    )}
                                                 </div>
                                             </a>
                                         ))}
@@ -88,21 +210,39 @@ const Memo = ({ memos, setMemos  }) => {
                         )}
                     </div>
 
+                    {/* 숨겨진 이미지 파일 input */}
+                    <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleImageUpload}
+                    />
+
+                    {/* 숨겨진 일반 파일 input */}
+                    <input
+                        type="file"
+                        ref={documentInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleFileUpload}
+                    />
+
                     {/* 편집 및 삭제 아이콘 */}
                     <div className='h-[40px]'>
-                        {editingMemoId === memo.id ? (
-                            <span className="material-symbols-outlined image">image</span>
-                        ) : null}
-                        {editingMemoId === memo.id ? (
-                            <span className="material-symbols-outlined file">attach_file</span>
-                        ) : null}
+                        {editingMemoId === memo.id && (
+                            <>
+                                <span className="material-symbols-outlined image" onClick={handleImageSelect}>image</span>
+                                <span className="material-symbols-outlined file" onClick={handleFileSelect}>attach_file</span>
+                            </>
+                        )}
                         <span className="material-symbols-outlined star">kid_star</span>
                         {editingMemoId === memo.id ? (
-                            <img className="icon-end-edit" src="/img/done.png" alt="" onClick={handleDoneClick} />
+                            <img className="icon-end-edit" src="/img/done.png" alt="" onClick={() => handleDoneClick(memo.id)} />
                         ) : (
-                            <img className="icon-start-edit" src="/img/edit.png" alt="" onClick={() => handleEditClick(memo.id)} />
+                            <img className="icon-start-edit" src="/img/edit.png" alt="" onClick={() => handleEditClick(memo.id, memo.content)} />
                         )}
-                        <img className="icon-delete" src="/img/delete.png" alt="" onClick={() => handleDeleteClick(memo.id)}/>
+                        <img className="icon-delete" src="/img/delete.png" alt="" onClick={() => handleDeleteClick(memo.id)} />
                     </div>
                 </div>
             ))}
@@ -112,7 +252,7 @@ const Memo = ({ memos, setMemos  }) => {
 
 // timestamp 변경
 const toDateString = (timestamp) => {
-    if (!timestamp || !timestamp.seconds) return '';  // 예외처리
+    if (!timestamp || !timestamp.seconds) return ''; // 예외처리
     const date = new Date(timestamp.seconds * 1000);
     return date.toLocaleString();  // "2025-03-03 15:30:00" 이런식으로 출력
 };
