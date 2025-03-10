@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-const MemoCreate = () => {
+const MemoCreate = ({fetchMemos}) => {
     const [images, setImages] = useState([]);
     const [file, setFile] = useState(null); // 파일은 1개만 허용
     const [content, setContent] = useState(''); // 텍스트 내용 상태 추가
@@ -97,6 +97,7 @@ const MemoCreate = () => {
                 setContent('');
                 setImages([]);
                 setFile(null);
+                fetchMemos();
             } else {
                 alert(result.message);
             }
