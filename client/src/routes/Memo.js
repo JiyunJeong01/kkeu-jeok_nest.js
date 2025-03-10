@@ -65,19 +65,7 @@ const Memo = ({ memos, setMemos }) => {
         setFile(uploadedFile);
     };
 
-    // 이미지 삭제
-    const removeImage = (index, memoId) => {
-        setMemos((prevMemos) =>
-            prevMemos.map((memo) =>
-                memo.id === memoId
-                    ? { ...memo, files: memo.files.filter((_, i) => i !== index) }
-                    : memo
-            )
-        );
-        const deleteImage = index;
-        setDeleteFiles(prev => [...prev, deleteImage]); 
-    };
-
+    // 파일 삭제
     const removeFile = (index, memoId) => {
         setMemos((prevMemos) =>
             prevMemos.map((memo) =>
@@ -86,8 +74,12 @@ const Memo = ({ memos, setMemos }) => {
                     : memo
             )
         );
-        const deleteImage = index;
-        setDeleteFiles(prev => [...prev, deleteImage]); 
+
+        // 파일이 기존에 있던 파일일 경우, 삭제하는 배열에 추가
+        const deletedFile = memos.find(m => m.id === memoId)?.files[index];
+        if (deletedFile?.downloadURL) {
+            setDeleteFiles(prev => [...prev, deletedFile.downloadURL]);
+        }
     };
 
     // 텍스트 변경
@@ -108,10 +100,9 @@ const Memo = ({ memos, setMemos }) => {
             formData.append('files', file);
         }
 
-        // 삭제된 이미지들을 전송 (서버에서 삭제해야 할 이미지들)
-        deleteFiles.forEach(file => {
-            formData.append('deletedFiles', file.id); // 파일 ID를 서버에 보내서 삭제
-        });
+        // 삭제할 파일들 인덱스 전송
+        const deleteFilesString = JSON.stringify(deleteFiles); // 배열을 JSON 문자열로 변환
+        formData.append('deletedFiles', deleteFilesString);
 
         try {
             const response = await fetch(`/memo/${memoId}`, {
@@ -188,7 +179,7 @@ const Memo = ({ memos, setMemos }) => {
                                             <div key={index} className='rounded-[10px] relative'>
                                                 <img className='w-full h-auto object-cover rounded-[10px]' src={file.downloadURL} alt={file.fileName}></img>
                                                 {editingMemoId === memo.id && (
-                                                    <span className="material-symbols-outlined icon-close" onClick={() => removeImage(index, memo.id)}>close</span>
+                                                    <span className="material-symbols-outlined icon-close" onClick={() => removeFile(index, memo.id)}>close</span>
                                                 )}
                                             </div>
                                         ))}
@@ -199,7 +190,7 @@ const Memo = ({ memos, setMemos }) => {
                                         .filter(file => !file.type.startsWith('image/'))
                                         .map((file, index) => (
                                             <a key={index} href={file.downloadURL} download>
-                                                <div className='flex border border-gray-300 rounded-full p-2'>
+                                                <div className='flex border border-gray-300 rounded-full p-2 relative'>
                                                     <span className="material-symbols-outlined pl-1">attach_file</span>
                                                     <span className='pl-1'>{file.fileName}</span>
                                                     {editingMemoId === memo.id && (

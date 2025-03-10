@@ -42,7 +42,7 @@ export class MemoController {
     // 메모 수정
     @Put('/:memoId')
     @UseInterceptors(FilesInterceptor('files'))
-    async modifiedMemo(@Session() session: Record<string, any>, @Body('content') content: string, @UploadedFiles() files: Array<Express.Multer.File>, @Param('memoId') memoId: string, @Res() res: Response) {
+    async modifiedMemo(@Session() session: Record<string, any>, @Body('content') content: string, @UploadedFiles() files: Array<Express.Multer.File>, @Param('memoId') memoId: string, @Body('deletedFiles') deletedFiles: string[], @Res() res: Response) {
         // 세션 정보 조회 = 사용자가 있는지 확인
         if (!session.user) {
             return res.json({ success: false, message: '재로그인 후 시도해주세요' });
@@ -51,6 +51,7 @@ export class MemoController {
         console.log(files);
         console.log(content);
         console.log(memoId);
+        console.log(deletedFiles);
 
         // await this.memoService.modifiedMemo(userId, memoId, content, files);
 
