@@ -42,9 +42,17 @@ export class MemoController {
     // 메모 수정
     @Put('/:memoId')
     @UseInterceptors(FilesInterceptor('files'))
-    async modifiedMemo(@Session() session: Record<string, any>, @Body('content') content: string, @UploadedFiles() files: Array<Express.Multer.File>, @Param('memoId') memoId: string,) {
-        const userId = session.user ? session.user.id : 0;
-        await this.memoService.modifiedMemo(userId, memoId, content, files);
+    async modifiedMemo(@Session() session: Record<string, any>, @Body('content') content: string, @UploadedFiles() files: Array<Express.Multer.File>, @Param('memoId') memoId: string, @Res() res: Response) {
+        // 세션 정보 조회 = 사용자가 있는지 확인
+        if (!session.user) {
+            return res.json({ success: false, message: '재로그인 후 시도해주세요' });
+        }
+        const userId = session.user.id;
+        console.log(files);
+        console.log(content);
+        console.log(memoId);
+
+        // await this.memoService.modifiedMemo(userId, memoId, content, files);
 
         return { message: "메모가 성공적으로 수정되었습니다." };
     }

@@ -67,23 +67,27 @@ const Memo = ({ memos, setMemos }) => {
 
     // 이미지 삭제
     const removeImage = (index, memoId) => {
-        if (memoId) {
-            // 서버에서 삭제할 이미지를 처리
-            const deletedImage = memos.find(memo => memo.id === memoId).files[index];
-            setDeleteFiles(prev => [...prev, deletedImage]); // 삭제된 이미지를 상태에 추가
-        }
-        setImages(images.filter((_, i) => i !== index)); // 로컬 상태에서 제거
+        setMemos((prevMemos) =>
+            prevMemos.map((memo) =>
+                memo.id === memoId
+                    ? { ...memo, files: memo.files.filter((_, i) => i !== index) }
+                    : memo
+            )
+        );
+        const deleteImage = index;
+        setDeleteFiles(prev => [...prev, deleteImage]); 
     };
 
     const removeFile = (index, memoId) => {
-        if (memoId) {
-            // 서버에서 삭제할 파일을 처리
-            const deletedFile = memos.find(memo => memo.id === memoId).files[index];
-            setDeleteFiles(prev => [...prev, deletedFile]); // 삭제된 파일을 상태에 추가
-        }
-    
-        // 로컬 상태에서 해당 파일 제거
-        setFile(null);
+        setMemos((prevMemos) =>
+            prevMemos.map((memo) =>
+                memo.id === memoId
+                    ? { ...memo, files: memo.files.filter((_, i) => i !== index) }
+                    : memo
+            )
+        );
+        const deleteImage = index;
+        setDeleteFiles(prev => [...prev, deleteImage]); 
     };
 
     // 텍스트 변경
@@ -119,7 +123,6 @@ const Memo = ({ memos, setMemos }) => {
 
             if (result.success) {
                 alert(result.message);
-                onUpdate(result.updatedMemo); // 업데이트 후 상위 컴포넌트에 변경 알림
             } else {
                 alert(result.message);
             }
@@ -182,8 +185,8 @@ const Memo = ({ memos, setMemos }) => {
                                     {memo.files
                                         .filter(file => file.type.startsWith('image/'))
                                         .map((file, index) => (
-                                            <div key={index} className='rounded-[10px]'>
-                                                <img className='w-full h-full object-cover rounded-lg' src={file.downloadURL} alt={file.fileName}></img>
+                                            <div key={index} className='rounded-[10px] relative'>
+                                                <img className='w-full h-auto object-cover rounded-[10px]' src={file.downloadURL} alt={file.fileName}></img>
                                                 {editingMemoId === memo.id && (
                                                     <span className="material-symbols-outlined icon-close" onClick={() => removeImage(index, memo.id)}>close</span>
                                                 )}
