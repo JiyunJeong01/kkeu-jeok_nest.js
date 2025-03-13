@@ -126,7 +126,7 @@ export class MemoService {
     }
 
     // 메모 수정
-    async modifiedMemo(userId: string, memoId: string, newContent: string, files?: Array<Express.Multer.File>): Promise<string> {
+    async modifiedMemo(userId: string, memoId: string, newContent: string, files?: Array<Express.Multer.File>, deleteFiles?: string[]): Promise<string> {
         try {
             const timestamp = new Date();
             const memoRef = doc(db, 'memos', memoId);
@@ -141,9 +141,39 @@ export class MemoService {
             if (files && files.length > 0) {
                 await this.uploadFile(userId, memoId, files);
             }
+            if (deleteFiles && deleteFiles.length > 0) {
+                await this.deleteSelectFiles(userId, memoId, deleteFiles);
+            }
             return memoId;
         } catch (error) {
             console.error('메모 수정 중 오류:', error);
+            throw error;
+        }
+    }
+
+    // 메모 수정 시 이미지 삭제
+    private async deleteSelectFiles(userId: string, memoId: string, downloadURLs : string[]) {
+        try {
+            await Promise.all(downloadURLs.map(async (downloadURL) => {
+                const fileSnapshot = await getDocs(
+                    query(
+                        collection(db, 'files'),
+                        where('memoId', '==', memoId),
+                        where('downloadURL', '==', downloadURL)
+                    )
+                );
+    
+                if (!fileSnapshot.empty) {
+                    const fileDoc = fileSnapshot.docs[0];
+                    const file = fileDoc.data();
+    
+                    const fileRef = ref(storage, `${userId}/${file.uuid}_${file.fileName}`);
+                    await deleteObject(fileRef);
+                    await deleteDoc(fileDoc.ref);
+                }
+            }));
+        } catch (error) {
+            console.error('이미지 삭제 중 오류:', error);
             throw error;
         }
     }
@@ -185,27 +215,6 @@ export class MemoService {
             await Promise.all(deleteFileDocsPromises);
         } catch (error) {
             console.error("메모와 파일 삭제 중 오류:", error);
-            throw error;
-        }
-    }
-
-    // 메모 이미지 삭제
-    async deleteOneFile(memoId: string, index: number, userId: string) {
-        try {
-            const fileSnapshot = await getDocs(
-                query(
-                    collection(db, 'files'),
-                    where('memoId', '==', memoId),
-                    where('index', '==', index)));
-    
-            const file = fileSnapshot.docs[0].data();
-    
-            const fileRef = ref(storage, `${userId}/${file.uuid}_${file.fileName}`);
-            await deleteObject(fileRef);
-            await deleteDoc(fileSnapshot.docs[0].ref);
-            return file;
-        } catch (error) {
-            console.error('이미지 삭제 중 오류:', error);
             throw error;
         }
     }

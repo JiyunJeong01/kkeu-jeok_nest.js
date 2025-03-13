@@ -42,18 +42,15 @@ export class MemoController {
     // 메모 수정
     @Put('/:memoId')
     @UseInterceptors(FilesInterceptor('files'))
-    async modifiedMemo(@Session() session: Record<string, any>, @Body('content') content: string, @UploadedFiles() files: Array<Express.Multer.File>, @Param('memoId') memoId: string, @Body('deletedFiles') deletedFiles: string[], @Res() res: Response) {
+    async modifiedMemo(@Session() session: Record<string, any>, @Body('content') content: string, @UploadedFiles() files: Array<Express.Multer.File>, @Param('memoId') memoId: string, @Body('deletedFiles') deletedFiles: string, @Res() res: Response) {
         // 세션 정보 조회 = 사용자가 있는지 확인
         if (!session.user) {
             return res.json({ success: false, message: '재로그인 후 시도해주세요' });
         }
         const userId = session.user.id;
-        console.log(files);
-        console.log(content);
-        console.log(memoId);
-        console.log(deletedFiles);
+        const modifiedeletedFiles = JSON.parse(deletedFiles);
 
-        // await this.memoService.modifiedMemo(userId, memoId, content, files);
+        await this.memoService.modifiedMemo(userId, memoId, content, files, modifiedeletedFiles);
 
         return { message: "메모가 성공적으로 수정되었습니다." };
     }
@@ -71,13 +68,5 @@ export class MemoController {
         await this.memoService.deleteMemo(userId, memoId);
 
         return res.json({ success: true, message: "메모가 성공적으로 삭제되었습니다." });
-    }
-
-    // 메모 수정 중 이미지 삭제
-    @Delete('/:memoId/:index')
-    @HttpCode(200)
-    async deleteImage(@Session() session: Record<string, any>, @Param('memoId') memoId: string, @Param('index', ParseIntPipe) index: number,) {
-        const userId = session.user ? session.user.id : 0;
-        await this.memoService.deleteOneFile(memoId, index, userId)
     }
 }
